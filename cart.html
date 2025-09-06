@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cart</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      background-color: #f8f9fa;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    h1 {
+      color: #1b5e20;
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+    table {
+      width: 90%;
+      margin: 0 auto;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ddd;
+    }
+    thead {
+      background-color: #1b5e20;
+      color: white;
+    }
+    tfoot td {
+      font-weight: bold;
+      background-color: #f1f1f1;
+    }
+    button {
+      background-color: #ff6f61;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #e65b50;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Your Cart</h1>
+
+  <div class="table-container">
+    <table id="cartTable">
+      <thead>
+        <tr>
+          <th>Book Name</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Amount</th>
+          <th>Remove</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3" style="text-align:right;"><b>Total:</b></td>
+          <td colspan="2" id="totalAmount"><b>$0</b></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <script>
+    function loadCart() {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      let tbody = document.querySelector("#cartTable tbody");
+      tbody.innerHTML = "";
+      let total = 0;
+
+      cart.forEach((item, index) => {
+        let amount = item.price * item.quantity;
+        total += amount;
+
+        let row = `
+          <tr>
+            <td>${item.name}</td>
+            <td>$${item.price}</td>
+            <td>${item.quantity}</td>
+            <td>$${amount.toFixed(2)}</td>
+            <td><button onclick="removeItem(${index})">Remove</button></td>
+          </tr>`;
+        tbody.innerHTML += row;
+      });
+
+      document.getElementById("totalAmount").innerHTML = `<b>$${total.toFixed(2)}</b>`;
+    }
+
+    function removeItem(index) {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      cart.splice(index, 1);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      loadCart();
+    }
+
+    window.onload = loadCart;
+  </script>
+
+</body>
+</html>
